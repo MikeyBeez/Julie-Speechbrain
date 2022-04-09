@@ -4,6 +4,7 @@ hyperparams.yaml
 lm.ckpt
 normalizer.ckpt
 tokenizer.ckpt
+*.ckpt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

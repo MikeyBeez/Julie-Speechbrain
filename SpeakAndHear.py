@@ -3,9 +3,16 @@ import speechbrain as sb
 import audiofile as af
 import sounddevice as sd
 
+# asr_model = EncoderDecoderASR.from_hparams(
+#     source="speechbrain/asr-transformer-transformerlm-librispeech",
+#     savedir="pretrained_models/asr-transformer-transformerlm-librispeech"
+# )
+
+
 asr_model = EncoderDecoderASR.from_hparams(
-    source="speechbrain/asr-crdnn-rnnlm-librispeech",
-    savedir="pretrained_model")
+    source="speechbrain/asr-wav2vec2-commonvoice-en",
+    savedir="pretrained_models/asr-wav2vec2-commonvoice-en"
+)
 
 
 def record_audio(filename, seconds):
@@ -18,11 +25,10 @@ def record_audio(filename, seconds):
     print("  ... saved to {}".format(filename))
 
 
-def listen(seconds):
-    record_audio("temp.wav", seconds)
-    print(asr_model.transcribe_file("temp.wav"))
-
-
 def main():
     while True:
-        listen(3)
+        record_audio("temp.wav", 5)
+        print(asr_model.transcribe_file("temp.wav"))
+
+
+main()
