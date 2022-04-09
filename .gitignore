@@ -5,6 +5,7 @@ lm.ckpt
 normalizer.ckpt
 tokenizer.ckpt
 *.ckpt
+*.lock
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
