@@ -1,3 +1,10 @@
+# Project specific
+asr.ckpt
+hyperparams.yaml
+lm.ckpt
+normalizer.ckpt
+tokenizer.ckpt
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
