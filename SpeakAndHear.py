@@ -36,14 +36,17 @@ def listen():
     stream.start_stream()
     print("* Listening mic. Press Ctrl+C to quit...")
     while True:
-        stream.start_stream()
         try:
-            data = stream.read(1024)
+            stream.start_stream()
+            data = stream.read(4000)
             if len(data) == 0:
                 break
             result = asr_model.feed_audio(data)
             print(result)
-        stream.stop_stream()
+            stream.stop_stream()
+        except:  # noqa: E722
+            break
+
 
 # def record_audio(filename, seconds):
 #     fs = 16000
