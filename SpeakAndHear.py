@@ -1,3 +1,4 @@
+from ast import While
 from asyncio import streams
 from speechbrain.pretrained import EncoderDecoderASR
 import pyaudio
@@ -32,26 +33,28 @@ def init():
 
 
 def listen():
-    p = pyaudio.PyAudio()
-    stream = p.open(format=pyaudio.paInt16, channels=1,
-                    rate=16000, input=True, frames_per_buffer=1024
-                    )
-    print("* Listening mic. Press Ctrl+C to quit...")
+    audio = pyaudio.PyAudio()
+    stream = audio.open(format=pyaudio.paInt16, channels=1,
+                        rate=16000, input=True, frames_per_buffer=1024
+                        )
     frames = []
-    while True:
-        stream.start_stream()
-        try:
+    try:
+        While True:
             data = stream.read(1024)
             frames.append(data)
             if len(data) == 0:
                 break
-            # convert data from bytes to wav file
-            result = asr_model.transcribe_file("temp.wav")
-            print(result)
-            stream.stop_stream()
         except KeyboardInterrupt:
             pass
+        # convert data from bytes to wav file
+        result = asr_model.transcribe_file("temp.wav")
+        print(result)
+        stream.stop_stream()
+        stream.close()
+        audio.terminate()
+        return result
 
+    # print("* Listening mic. Press Ctrl+C to quit...")
 
 # def record_audio(filename, seconds):
 #     fs = 16000
@@ -65,8 +68,7 @@ def listen():
 
 def main():
     init()
-    while True:
-        listen()
+    listen()
 
 
 main()
