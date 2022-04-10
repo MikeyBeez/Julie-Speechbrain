@@ -1,17 +1,8 @@
-from ast import While
 from asyncio import streams
 from speechbrain.pretrained import EncoderDecoderASR
 import pyaudio
 import speechbrain as sb
 import audiofile as af
-import sounddevice as sd
-
-
-# asr_model = EncoderDecoderASR.from_hparams(
-#     source="speechbrain/asr-transformer-transformerlm-librispeech",
-#     savedir="pretrained_models/asr-transformer-transformerlm-librispeech",
-#     run_opts{device="cuda:1"}
-# )
 
 
 def init():
@@ -21,15 +12,8 @@ def init():
     asr_model = EncoderDecoderASR.from_hparams(
         source="speechbrain/asr-transformer-transformerlm-librispeech",
         savedir="pretrained_models/asr-transformer-transformerlm-librispeech",
-        run_opts={"device": "cuda:1"}
+        run_opts={"device": "cuda"}
     )
-
-
-# asr_model = EncoderDecoderASR.from_hparams(
-#     source="speechbrain/asr-wav2vec2-commonvoice-en",
-#     savedir="pretrained_models/asr-wav2vec2-commonvoice-en",
-#     run_opts={"device": "cuda"}
-# )
 
 
 def listen():
@@ -47,28 +31,29 @@ def listen():
     except KeyboardInterrupt:
         pass
     # convert data from bytes to wav file
-    result = asr_model.transcribe_file("temp.wav")
-    print(result)
+    #result = asr_model.transcribe_file("temp.wav")
+    # print(result)
     stream.stop_stream()
     stream.close()
     audio.terminate()
-    return result
+    # return result
 
-    # print("* Listening mic. Press Ctrl+C to quit...")
 
-# def record_audio(filename, seconds):
-#     fs = 16000
-#     print("recording {} ({}s) ...".format(filename, seconds))
-#     y = sd.rec(int(seconds * fs), samplerate=fs, channels=1)
-#     sd.wait()
-#     y = y.T
-#     af.write(filename, y, fs)
-#     print("  ... saved to {}".format(filename))
+def play(filename):
+    audio = pyaudio.PyAudio()
+    stream = audio.open(format=pyaudio.paInt16, channels=1,
+                        rate=16000, output=True)
+    af.play(filename, stream)
+    stream.close()
+    audio.terminate()
 
 
 def main():
     init()
+    print("* Listening mic. Press Ctrl+C to quit...")
     listen()
+    print("* Recording finished")
+    play("temp.wav")
 
 
 main()
