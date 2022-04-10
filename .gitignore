@@ -8,6 +8,7 @@ tokenizer.ckpt
 *.lock
 model_checkpoints/
 temp.wav
+temp.flac
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
