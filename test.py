@@ -20,10 +20,14 @@ stream = p.open(format=FORMAT,
 print("* recording")
 
 frames = []
-
-for i in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
-    data = stream.read(CHUNK)
-    frames.append(data)
+try:
+    while True:
+        data = stream.read(CHUNK)
+        frames.append(data)
+        # if len(data) == 0:
+        # break
+except KeyboardInterrupt:
+    pass
 
 print("* done recording")
 
