@@ -3,6 +3,7 @@ from speechbrain.pretrained import EncoderDecoderASR
 import pyaudio
 import speechbrain as sb
 import audiofile as af
+import os
 
 
 def init():
@@ -26,26 +27,26 @@ def listen():
         while True:
             data = stream.read(1024)
             frames.append(data)
-            if len(data) == 0:
-                break
+            # if len(data) == 0:
+            #     break
     except KeyboardInterrupt:
         pass
-    # convert data from bytes to wav file
-    #result = asr_model.transcribe_file("temp.wav")
-    # print(result)
     stream.stop_stream()
     stream.close()
     audio.terminate()
-    # return result
+    soundfile = wave.open(WAVE_OUTPUT_FILENAME, 'wb')
+    soundfile.setnchannels(1)
+    soundfile.setsampwidth(audio.get_sample_size(pyaudio.paInt16))
+    soundfile.setframerate(16000)
+    soundfile.writeframes(b''.join(frames))
+    soundfile.close()
+
+
+# play temp.wav file
 
 
 def play(filename):
-    audio = pyaudio.PyAudio()
-    stream = audio.open(format=pyaudio.paInt16, channels=1,
-                        rate=16000, output=True)
-    af.play(filename, stream)
-    stream.close()
-    audio.terminate()
+    os.system("aplay " + filename)
 
 
 def main():
