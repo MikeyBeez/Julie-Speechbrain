@@ -1,49 +1,39 @@
-# use speechbrain to transcribe from microphone
+import pyaudio
+import wave
 
-def main():
-    from speechbrain.pretrained import EncoderDecoderASR
-    import speechbrain as sb
-    import audiofile as af
-    import sounddevice as sd
-    import os
-    import time
-    import sys
-    import argparse
+# record variable length audio stream until silence
+CHUNK = 1024
+FORMAT = pyaudio.paInt16
+CHANNELS = 1
+RATE = 16000
+RECORD_SECONDS = 5
+WAVE_OUTPUT_FILENAME = "output.wav"
 
-    parser = argparse.ArgumentParser(description='Speak and hear')
-    parser.add_argument('--source', type=str, default='speechbrain/asr-crdnn-rnnlm-librispeech',
-                        help='source model')
-    parser.add_argument('--savedir', type=str, default='pretrained_model',
-                        help='savedir')
-    parser.add_argument('--seconds', type=float, default=3,
-                        help='seconds to record')
-    parser.add_argument('--output', type=str, default='output.wav',
-                        help='output file')
-    args = parser.parse_args()
+p = pyaudio.PyAudio()
 
-    asr_model = EncoderDecoderASR.from_hparams(
-        source=args.source,
-        savedir=args.savedir)
+stream = p.open(format=FORMAT,
+                channels=CHANNELS,
+                rate=RATE,
+                input=True,
+                frames_per_buffer=CHUNK)
 
-    def record_audio(filename, seconds):
-        fs = 16000
-        print("recording {} ({}s) ...".format(filename, seconds))
-        y = sd.rec(int(seconds * fs), samplerate=fs, channels=1)
-        sd.wait()
-        y = y.T
-        af.write(filename, y, fs)
-        print("  ... saved to {}".format(filename))
+print("* recording")
 
-    def listen(seconds):
-        record_audio("temp.wav", seconds)
+frames = []
 
-    def transcribe(seconds):
-        record_audio("temp.wav", seconds)
-        print(asr_model.transcribe_file("temp.wav"))
+for i in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
+    data = stream.read(CHUNK)
+    frames.append(data)
 
-    def main():
-        while True:
-            listen(3)
-            # print(asr_model.transcribe_file("temp.wav"))
+print("* done recording")
 
-    main()
+stream.stop_stream()
+stream.close()
+p.terminate()
+
+wf = wave.open(WAVE_OUTPUT_FILENAME, 'wb')
+wf.setnchannels(CHANNELS)
+wf.setsampwidth(p.get_sample_size(FORMAT))
+wf.setframerate(RATE)
+wf.writeframes(b''.join(frames))
+wf.close()

@@ -14,6 +14,8 @@ import sounddevice as sd
 
 
 def init():
+    global WAVE_OUTPUT_FILENAME
+    WAVE_OUTPUT_FILENAME = "temp.wav"
     global asr_model
     asr_model = EncoderDecoderASR.from_hparams(
         source="speechbrain/asr-transformer-transformerlm-librispeech",
@@ -30,25 +32,25 @@ def init():
 
 
 def listen():
-    WAVE_OUTPUT_FILENAME = "temp.wav"
     p = pyaudio.PyAudio()
     stream = p.open(format=pyaudio.paInt16, channels=1,
                     rate=16000, input=True, frames_per_buffer=1024
                     )
-    stream.start_stream()
     print("* Listening mic. Press Ctrl+C to quit...")
+    frames = []
     while True:
+        stream.start_stream()
         try:
-            stream.start_stream()
-            data = stream.read(4000)
+            data = stream.read(1024)
+            frames.append(data)
             if len(data) == 0:
                 break
             # convert data from bytes to wav file
             result = asr_model.transcribe_file("temp.wav")
             print(result)
             stream.stop_stream()
-        except:  # no microphone
-            break
+        except KeyboardInterrupt:
+            pass
 
 
 # def record_audio(filename, seconds):
@@ -62,6 +64,7 @@ def listen():
 
 
 def main():
+    init()
     while True:
         listen()
 
