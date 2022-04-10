@@ -32,7 +32,8 @@ def init():
 def listen():
     p = pyaudio.PyAudio()
     stream = p.open(format=pyaudio.paInt16, channels=1,
-                    rate=16000, input=True, frames_per_buffer=1024)
+                    rate=16000, input=True, frames_per_buffer=1024,
+                    WAVE_OUTPUT_FILENAME="temp.wav")
     stream.start_stream()
     print("* Listening mic. Press Ctrl+C to quit...")
     while True:
@@ -42,8 +43,7 @@ def listen():
             if len(data) == 0:
                 break
             # convert data from bytes to wav file
-            wav_file = af.array_to_wave(data, 'temp.wav')
-            result = asr_model.transcribe_file(wav_file)
+            result = asr_model.transcribe_file("temp.wav")
             print(result)
             stream.stop_stream()
         except:  # no microphone
