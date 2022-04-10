@@ -30,10 +30,11 @@ def init():
 
 
 def listen():
+    WAVE_OUTPUT_FILENAME = "temp.wav"
     p = pyaudio.PyAudio()
     stream = p.open(format=pyaudio.paInt16, channels=1,
-                    rate=16000, input=True, frames_per_buffer=1024,
-                    WAVE_OUTPUT_FILENAME="temp.wav")
+                    rate=16000, input=True, frames_per_buffer=1024
+                    )
     stream.start_stream()
     print("* Listening mic. Press Ctrl+C to quit...")
     while True:
