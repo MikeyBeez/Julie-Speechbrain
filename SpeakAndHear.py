@@ -41,10 +41,12 @@ def listen():
             data = stream.read(4000)
             if len(data) == 0:
                 break
-            result = asr_model.feed_audio(data)
+            # convert data from bytes to wav file
+            wav_file = af.array_to_wave(data, 'temp.wav')
+            result = asr_model.transcribe_file(wav_file)
             print(result)
             stream.stop_stream()
-        except:  # noqa: E722
+        except:  # no microphone
             break
 
 
