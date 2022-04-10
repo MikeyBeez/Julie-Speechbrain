@@ -39,20 +39,20 @@ def listen():
                         )
     frames = []
     try:
-        While True:
+        while True:
             data = stream.read(1024)
             frames.append(data)
             if len(data) == 0:
                 break
-        except KeyboardInterrupt:
-            pass
-        # convert data from bytes to wav file
-        result = asr_model.transcribe_file("temp.wav")
-        print(result)
-        stream.stop_stream()
-        stream.close()
-        audio.terminate()
-        return result
+    except KeyboardInterrupt:
+        pass
+    # convert data from bytes to wav file
+    result = asr_model.transcribe_file("temp.wav")
+    print(result)
+    stream.stop_stream()
+    stream.close()
+    audio.terminate()
+    return result
 
     # print("* Listening mic. Press Ctrl+C to quit...")
 
