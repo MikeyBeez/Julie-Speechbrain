@@ -3,18 +3,18 @@ import speechbrain as sb
 import audiofile as af
 import sounddevice as sd
 
-# asr_model = EncoderDecoderASR.from_hparams(
-#     source="speechbrain/asr-transformer-transformerlm-librispeech",
-#     savedir="pretrained_models/asr-transformer-transformerlm-librispeech",
-#     run_opts{device="cuda:1"}
-# )
-
-
 asr_model = EncoderDecoderASR.from_hparams(
-    source="speechbrain/asr-wav2vec2-commonvoice-en",
-    savedir="pretrained_models/asr-wav2vec2-commonvoice-en",
+    source="speechbrain/asr-transformer-transformerlm-librispeech",
+    savedir="pretrained_models/asr-transformer-transformerlm-librispeech",
     run_opts={"device": "cuda"}
 )
+
+
+# asr_model = EncoderDecoderASR.from_hparams(
+#     source="speechbrain/asr-wav2vec2-commonvoice-en",
+#     savedir="pretrained_models/asr-wav2vec2-commonvoice-en",
+#     run_opts={"device": "cuda"}
+# )
 
 
 def record_audio(filename, seconds):
