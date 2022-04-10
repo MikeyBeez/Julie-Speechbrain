@@ -4,6 +4,7 @@ import pyaudio
 import speechbrain as sb
 import audiofile as af
 import os
+import wave
 
 
 def init():
