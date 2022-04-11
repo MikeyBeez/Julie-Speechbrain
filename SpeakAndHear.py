@@ -1,6 +1,4 @@
 from asyncio import streams
-from gettext import npgettext
-from re import I
 from speechbrain.pretrained import EncoderDecoderASR
 import pyaudio
 import audiofile as af
@@ -20,20 +18,18 @@ def init():
 
 def listen():
     WAVE_OUTPUT_FILENAME = "temp.wav"
-    CHUNK = 1024
     audio = pyaudio.PyAudio()
     stream = audio.open(format=pyaudio.paInt16, channels=1,
-                        rate=16000, input=True, frames_per_buffer=1024
-                        )
+                        rate=16000, input=True, frames_per_buffer=8000)
     frames = []
     try:
         while True:
-            data = stream.read(1024)
-            frames.append(data)
-            print('len data')
+            data = stream.read(2000)
+            print('length data')
             print(len(data))
-            if len(data) < 5:
+            if len(data) == 0:
                 break
+            frames.append(data)
     except KeyboardInterrupt:
         pass
     stream.stop_stream()
