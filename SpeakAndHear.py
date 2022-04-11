@@ -6,8 +6,7 @@ import pyaudio
 import audiofile as af
 import os
 import wave
-import numpy as np
-import scipy.signal as signal
+import subprocess
 
 
 def init():
@@ -44,6 +43,18 @@ def listen():
     soundfile.setframerate(16000)
     soundfile.writeframes(b''.join(frames))
     soundfile.close()
+    subprocess.call(
+        ["sox", "temp.wav", "reversed.wav",
+            "silence", "1", "0.1", "1%", "reverse"]
+    )
+    subprocess.call(
+        ["sox", "reversed.wav", "silenced.wav",
+            "silence", "1", "0.1", "1%", "reverse"]
+    )
+    subprocess.call(
+        ["sox", "silenced.wav", "temp.wav",
+            "noisered", "speech.noiseprofile", "0.3"]
+    )
 
 
 def main():
