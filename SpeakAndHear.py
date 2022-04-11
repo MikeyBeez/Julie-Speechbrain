@@ -30,7 +30,9 @@ def listen():
         while True:
             data = stream.read(1024)
             frames.append(data)
-            if len(data) == 0:
+            print('len data')
+            print(len(data))
+            if len(data) < 5:
                 break
     except KeyboardInterrupt:
         pass
